@@ -1,0 +1,25 @@
+{
+  "name": "newman-tests",
+  "version": "1.0.0",
+  "description": "ejecutar pruebas con newman",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uvilor/newman-tests.git"
+  },
+  "keywords": [
+    "newman"
+  ],
+  "author": "Erinell Barba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uvilor/newman-tests/issues"
+  },
+  "homepage": "https://github.com/uvilor/newman-tests#readme",
+  "dependencies": {
+    "newman": "^6.2.1"
+  }
+}
