@@ -22,7 +22,7 @@ jobs:
         run: npm install -g newman
 
       - name: Ejecutar las pruebas de Newman
-        run: newman run path/to/your/postman_collection.json --reporters cli,html --reporter-html-export newman_report.html
+        run: newman run Uvilor_reporte.postman_collection.json --environment uvilor-labs.postman_environment.json --reporters cli,html --reporter-html-export newman_report.html
 
       - name: Subir reporte a S3 (opcional)
         run: |
