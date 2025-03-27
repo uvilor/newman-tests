@@ -10,17 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Consultar repositorio
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Configurar Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '16'
 
-      - name: Install Newman
+      - name: Instalar Newman
         run: npm install -g newman
 
-      - name: Ejecutar las pruebas de Newman
+      - name: Ejecutar las pruebas de newman
         run: newman run Uvilor_reporte.postman_collection.json --environment uvilor-labs.postman_environment.json --reporters cli,html --reporter-html-export newman_report.html
 
