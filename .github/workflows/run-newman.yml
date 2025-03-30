@@ -33,7 +33,7 @@ jobs:
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          git add newman/newman_report.html
+          git add newman/*.html
           git commit -m "Agregando reporte Newman - $(date '+%Y-%m-%d %H:%M:%S')" || echo "No hay cambios para hacer commit"
           git push origin main || echo "No hay cambios para hacer push"
 
