@@ -22,7 +22,7 @@ jobs:
         run: npm install -g newman newman-reporter-html newman-reporter-htmlextra
 
       - name: Ejecutar las pruebas de newman
-        run: newman run Uvilor_reporte.postman_collection.json --environment uvilor-labs.postman_environment.json --reporters cli,html --reporter-html-export newman/newman_report.html 
+        run: newman run Uvilor_reporte.postman_collection.json --environment uvilor-labs.postman_environment.json --reporters cli,html --reporter-html-export newman/newman_report.html -n 2 -r htmlextra 
         
       - name: Guardar reporte en el repositorio
         run: |
