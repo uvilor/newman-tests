@@ -31,4 +31,4 @@ jobs:
           aws-region: us-east-1
       
       - name: Upload report to S3
-        run: aws s3 cp newman_report.html s3://newman-uvilor/
+        run: aws s3 cp newman/ s3://newman-uvilor/ --recursive
