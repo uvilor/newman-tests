@@ -38,7 +38,7 @@ jobs:
               echo "Ejecutando Newman para: $username"
               newman run Uvilor_reporte.postman_collection.json \
                 --environment uvilor-labs.postman_environment.json \
-                --golbal-var "credentials=$user"
+                --golbal-var "credentials=$user" \  
                 --reporters cli,html \
                 --reporter-html-export newman/${ctid}/newman_report.html -n 2 -r htmlextra 
           done
