@@ -30,17 +30,26 @@ jobs:
         env:
           USERS_ARRAY: ${{ secrets.USERS_ARRAY }}
         run: |
-          echo '${USERS_ARRAY}' > users.json
-          users=$(jq -c '.[]' users.json)  # Convertir en lista de objetos
-          for user in $users; do
-            ctid=$(echo $user | jq -r '.ctid')
+          # Escribir la variable en un archivo JSON correctamente
+          printf "%s" "${USERS_ARRAY}" > users.json
 
-              echo "Ejecutando Newman para: $username"
-              newman run Uvilor_reporte.postman_collection.json \
-                --environment uvilor-labs.postman_environment.json \
-                --golbal-var "credentials=$user" \  
-                --reporters cli,html \
-                --reporter-html-export newman/${ctid}/newman_report.html -n 2 -r htmlextra 
+          # Verificar que el archivo es válido
+          echo "Contenido de users.json:"
+          cat users.json
+          jq . users.json || { echo "Error: JSON inválido"; exit 1; }
+
+          # Procesar cada usuario
+          jq -c '.[]' users.json | while read -r user; do
+            ctid=$(echo "$user" | jq -r '.ctid')
+            username=$(echo "$user" | jq -r '.username')
+
+            echo "Ejecutando Newman para usuario: $username, CTID: $ctid"
+
+            newman run Uvilor_reporte.postman_collection.json \
+              --environment uvilor-labs.postman_environment.json \
+              --global-var "credentials=$user" \
+              --reporters cli,html \
+              --reporter-html-export newman/${ctid}/newman_report.html -n 2 -r htmlextra
           done
 
 
