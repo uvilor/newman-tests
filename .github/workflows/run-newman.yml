@@ -45,6 +45,8 @@ jobs:
 
             echo "Ejecutando Newman para usuario: $username, CTID: $ctid"
 
+            mkdir -p newman/${ctid}
+            
             newman run Uvilor_reporte.postman_collection.json \
               --environment uvilor-labs.postman_environment.json \
               --global-var "credentials=$user" \
