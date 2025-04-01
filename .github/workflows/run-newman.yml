@@ -51,7 +51,7 @@ jobs:
               --environment uvilor-labs.postman_environment.json \
               --global-var "credentials=$user" \
               --reporters cli,html \
-              --reporter-html-export newman/${ctid}/newman_report.html -n 1 -r htmlextra
+              --reporter-html-export "newman/${ctid}/newman_report.html" -n 1 -r htmlextra
           done
 
 
