@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Instalar Newman
+      - name: Instalar Newman y reportes
         run: npm install -g newman newman-reporter-html newman-reporter-htmlextra
 
       - name: Crear carpeta para reportes
@@ -44,20 +44,29 @@ jobs:
 
             # Asegurar que la carpeta de reportes existe
             mkdir -p "newman/${ctid}"
-            report_path="newman/${ctid}/newman_report.html"
+            report_html="newman/${ctid}/newman_report.html"
+            report_htmlextra="newman/${ctid}/newman_report_extra.html"
 
-            # Ejecutar Newman y generar el reporte en la carpeta correcta
+            # Ejecutar Newman y generar reportes en la carpeta correcta
             newman run Uvilor_reporte.postman_collection.json \
               --environment uvilor-labs.postman_environment.json \
               --global-var "credentials=$user" \
               --reporters cli,html,htmlextra \
-              --reporter-html-export "${report_path}" -n 1 
+              --reporter-html-export "${report_html}" \
+              --reporter-htmlextra-export "${report_htmlextra}" -n 1 
 
-            # Verificar si el archivo fue generado
-            if [[ -f "${report_path}" ]]; then
-              echo "Reporte generado exitosamente: ${report_path}"
+            # Verificar si los archivos fueron generados
+            if [[ -f "${report_html}" ]]; then
+              echo "✅ Reporte HTML generado: ${report_html}"
             else
-              echo "Error: No se generó el reporte en ${report_path}"
+              echo "❌ Error: No se generó el reporte HTML en ${report_html}"
+              exit 1
+            fi
+
+            if [[ -f "${report_htmlextra}" ]]; then
+              echo "✅ Reporte HTML Extra generado: ${report_htmlextra}"
+            else
+              echo "❌ Error: No se generó el reporte HTML Extra en ${report_htmlextra}"
               exit 1
             fi
           done
