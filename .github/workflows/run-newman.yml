@@ -46,12 +46,12 @@ jobs:
             echo "Ejecutando Newman para usuario: $username, CTID: $ctid"
 
             mkdir -p newman/${ctid}
-            
+
             newman run Uvilor_reporte.postman_collection.json \
               --environment uvilor-labs.postman_environment.json \
               --global-var "credentials=$user" \
               --reporters cli,html \
-              --reporter-html-export newman/${ctid}/newman_report.html -n 2 -r htmlextra
+              --reporter-html-export newman/${ctid}/newman_report.html -n 1 -r htmlextra
           done
 
 
@@ -63,4 +63,9 @@ jobs:
           aws-region: us-east-1
       
       - name: Upload report to S3
-        run: aws s3 cp newman/ s3://newman-uvilor/ --recursive
+        run: |
+          echo "Verificando contenido de la carpeta newman/"
+          ls -R newman/
+          
+          echo "Subiendo reportes a S3..."
+          aws s3 cp newman/ s3://newman-uvilor/ --recursive
