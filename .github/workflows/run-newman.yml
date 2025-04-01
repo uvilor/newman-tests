@@ -25,10 +25,24 @@ jobs:
       - name: Crear carpeta para reportes
         run: mkdir -p newman
 
-        
-      - name: Ejecutar las pruebas de newman
-        run: newman run Uvilor_reporte.postman_collection.json --environment uvilor-labs.postman_environment.json --reporters cli,html --reporter-html-export newman/newman_report.html -n 2 -r htmlextra 
-        
+
+      - name: Correr newman
+        env:
+          USERS_ARRAY: ${{ secrets.USERS_ARRAY }}
+        run: |
+          echo '${USERS_ARRAY}' > users.json
+          users=$(jq -c '.[]' users.json)  # Convertir en lista de objetos
+          for user in $users; do
+            ctid=$(echo $user | jq -r '.ctid')
+
+              echo "Ejecutando Newman para: $username"
+              newman run Uvilor_reporte.postman_collection.json \
+                --environment uvilor-labs.postman_environment.json \
+                --golbal-var "credentials=$user"
+                --reporters cli,html \
+                --reporter-html-export newman/${ctid}/newman_report.html -n 2 -r htmlextra 
+          done
+          
       - name: Guardar reporte en el repositorio
         run: |
           git config --global user.email "github-actions@github.com"
