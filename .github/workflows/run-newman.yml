@@ -55,7 +55,7 @@ jobs:
               --reporter-html-export "${report_html}" \
               --reporter-htmlextra-export "${report_htmlextra}" -n 1 
 
-            # Verificar si los archivos fueron generados
+            # Verificar si los archivos fueron generados correctamente
             if [[ -f "${report_html}" ]]; then
               echo "✅ Reporte HTML generado: ${report_html}"
             else
@@ -85,3 +85,6 @@ jobs:
 
           echo "Subiendo reportes a S3..."
           aws s3 cp newman/ s3://newman-uvilor/ --recursive
+
+
+    
