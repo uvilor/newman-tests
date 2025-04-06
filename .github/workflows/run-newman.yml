@@ -28,45 +28,43 @@ jobs:
         env:
           USERS_ARRAY: ${{ secrets.USERS_ARRAY }}
         run: |
-          # Guardar la variable JSON en un archivo y verificar su contenido
+          DATE=$(date +'%Y-%m-%d')
+
           printf "%s" "${USERS_ARRAY}" > users.json
 
           echo "Verificando contenido de users.json:"
           cat users.json
           jq . users.json || { echo "Error: JSON inválido"; exit 1; }
 
-          # Procesar cada usuario
           jq -c '.[]' users.json | while read -r user; do
             ctid=$(echo "$user" | jq -r '.ctid')
             username=$(echo "$user" | jq -r '.username')
 
             echo "Ejecutando Newman para usuario: $username, CTID: $ctid"
 
-            # Asegurar que la carpeta de reportes existe
-            mkdir -p "newman/${ctid}"
-            report_html="newman/${ctid}/newman_report.html"
-            report_htmlextra="newman/${ctid}/newman_report_extra.html"
+            report_dir="newman/${ctid}/${DATE}"
+            mkdir -p "$report_dir"
+            report_html="${report_dir}/newman_report.html"
+            report_htmlextra="${report_dir}/newman_report_extra.html"
 
-            # Ejecutar Newman y generar reportes en la carpeta correcta
             newman run Uvilor_reporte.postman_collection.json \
               --environment uvilor-labs.postman_environment.json \
               --global-var "credentials=$user" \
               --reporters cli,html,htmlextra \
-              --reporter-html-export "${report_html}" \
-              --reporter-htmlextra-export "${report_htmlextra}" -n 1 
+              --reporter-html-export "$report_html" \
+              --reporter-htmlextra-export "$report_htmlextra" -n 1
 
-            # Verificar si los archivos fueron generados correctamente
-            if [[ -f "${report_html}" ]]; then
-              echo "✅ Reporte HTML generado: ${report_html}"
+            if [[ -f "$report_html" ]]; then
+              echo "✅ Reporte HTML generado: $report_html"
             else
-              echo "❌ Error: No se generó el reporte HTML en ${report_html}"
+              echo "❌ Error: No se generó el reporte HTML en $report_html"
               exit 1
             fi
 
-            if [[ -f "${report_htmlextra}" ]]; then
-              echo "✅ Reporte HTML Extra generado: ${report_htmlextra}"
+            if [[ -f "$report_htmlextra" ]]; then
+              echo "✅ Reporte HTML Extra generado: $report_htmlextra"
             else
-              echo "❌ Error: No se generó el reporte HTML Extra en ${report_htmlextra}"
+              echo "❌ Error: No se generó el reporte HTML Extra en $report_htmlextra"
               exit 1
             fi
           done
@@ -78,13 +76,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Upload report to S3
+      - name: Subir reportes a S3
         run: |
           echo "Verificando contenido de la carpeta newman/"
           ls -R newman/
 
           echo "Subiendo reportes a S3..."
           aws s3 cp newman/ s3://newman-uvilor/ --recursive
-
-
-    
